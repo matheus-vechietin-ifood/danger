@@ -71,7 +71,7 @@ module Danger
       return ensure_commitish_exists_on_branch!(commitish, commitish) if commit_is_ref?(commitish)
       return if commit_exists?(commitish)
 
-      git_in_depth_fetch
+      git_shallow_fetch
       raise_if_we_cannot_find_the_commit(commitish) if commit_not_exists?(commitish)
     end
 
@@ -89,11 +89,15 @@ module Danger
 
       return if success
 
-      git_in_depth_fetch
+      git_shallow_fetch
       raise_if_we_cannot_find_the_commit(commitish) if commit_not_exists?(commitish)
     end
 
     private
+
+    def git_shallow_fetch
+      exec("fetch --unshallow")
+    end
 
     def git_in_depth_fetch
       exec("fetch --depth 1000000")
@@ -126,7 +130,7 @@ module Danger
       possible_merge_base = find_merge_base_with_incremental_fetch(repo, from, to)
       return possible_merge_base if possible_merge_base
 
-      git_in_depth_fetch
+      git_shallow_fetch
       possible_merge_base = possible_merge_base(repo, from, to)
 
       raise "Cannot find a merge base between #{from} and #{to}." unless possible_merge_base
