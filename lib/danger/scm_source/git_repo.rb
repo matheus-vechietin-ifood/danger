@@ -96,7 +96,8 @@ module Danger
     private
 
     def git_shallow_fetch
-      exec("fetch --unshallow")
+      #exec("fetch --unshallow")
+      exec("fetch --depth 1")
     end
 
     def git_in_depth_fetch
@@ -105,7 +106,7 @@ module Danger
 
     def git_fetch_branch_to_depth(branch, depth)
       #exec("fetch --depth=#{depth} --prune origin +refs/heads/#{branch}:refs/remotes/origin/#{branch}")
-      exec("fetch --unshallow --prune origin +refs/heads/#{branch}:refs/remotes/origin/#{branch}")
+      exec("fetch --depth=#{depth} --prune origin +refs/heads/#{branch}:refs/remotes/origin/#{branch}")
     end
 
     def default_env
